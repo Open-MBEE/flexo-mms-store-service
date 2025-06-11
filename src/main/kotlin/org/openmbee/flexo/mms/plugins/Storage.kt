@@ -161,19 +161,6 @@ class S3Storage(s3Config: S3Config) {
             }
         }
     }
-
-    companion object {
-        //remove once layer1 is updated to not use post in model load
-        fun buildLocation(filename: String, extension: String): String {
-            val today = LocalDate.now()
-            return java.lang.String.format(
-                "%s/%s.%s",
-                today,
-                filename,
-                extension
-            )
-        }
-    }
 }
 
 data class S3Config(
