@@ -106,37 +106,6 @@ class ApplicationTest {
             minioContainer.stop()
         }
     }
-    @Test
-    fun testStore() = testApplication {
-        environment {
-            config = testEnv
-        }
-        application {
-            module()
-        }
-
-        Assertions.assertTrue(minioContainer.isRunning)
-        val filename = "test.ttl"
-
-        client.post("store/${filename}") {
-            headers{
-                append(HttpHeaders.Authorization, "Bearer $authToken")
-            }
-            setBody(object: OutgoingContent.WriteChannelContent() {
-                override val contentType = determineContentType(filename)
-                //override val contentLength = File(filename).length().toLong() ?: 0L
-                override suspend fun writeTo(channel: ByteWriteChannel) {
-                    File(filename).inputStream().use { input -> channel.writeAvailable(input.readBytes())}
-                }
-            })
-        }.apply {
-            assertEquals("200 OK", this.status.toString())
-            val url = this.bodyAsText()
-            assertNotNull(url)
-            Assertions.assertTrue(url.contains(filename))
-
-        }
-    }
 
     @Test
     fun testPutStore() = testApplication {

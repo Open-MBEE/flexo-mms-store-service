@@ -41,21 +41,6 @@ fun Application.configureStorage() {
 
     routing {
         //authenticate { // if authen is desired then uncomment this
-            post("store/{filename}") {
-                // https://www.baeldung.com/kotlin/io-and-default-dispatcher
-                // s3 client file operation is blocking, on netty this will error without withContext
-                // this is here to keep compatibility with layer1's load model until layer1 is updated
-                withContext(Dispatchers.IO) {
-                    val location = S3Storage.buildLocation(call.parameters["filename"]!!, MimeTypes.Text.TTL.extension)
-                    s3Storage.store(
-                        call.receiveStream(),
-                        location,
-                        call.request.contentType()
-                    )
-                    call.application.log.info("Location:\n$location")
-                    call.respond(s3Storage.getPreSignedUrl(location))
-                }
-            }
             put("store/{path...}") {
                 withContext(Dispatchers.IO) {
                     val path = call.parameters.getAll("path")?.joinToString("/")
