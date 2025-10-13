@@ -10,13 +10,13 @@ ktor {
 }
 
 jwt {
-    domain = "https://localhost/"
+    domain = "http://flexo-mms-services"
     domain = ${?JWT_DOMAIN}
-    audience = "test-audience"
+    audience = "flexo-mms-audience"
     audience = ${?JWT_AUDIENCE}
-    secret = "thisissomethingsecret123"
+    secret = "thisissomethingreallylong1234567801234567890"
     secret = ${?JWT_SECRET}
-    realm = "Test Relm"
+    realm = "flexo-mms"
     realm = ${?JWT_REALM}
 }
 

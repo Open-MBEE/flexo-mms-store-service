@@ -22,6 +22,8 @@ import java.io.InputStreamReader
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.time.Duration
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -78,17 +80,17 @@ class ApplicationTest {
             val jwtAudience = testEnvConfig.config.property("jwt.audience").getString()
             val issuer = testEnvConfig.config.property("jwt.domain").getString()
             val secret = testEnvConfig.config.property("jwt.secret").getString()
-            val expires = Date(System.currentTimeMillis() + (1 * 24 * 60 * 60 * 1000))
+            val expires = LocalDate.now().plusYears(1)
             return JWT.create()         //ADD "Bearer " +
                 .withAudience(jwtAudience)
                 .withIssuer(issuer)
                 .withClaim("username", auth.username)
                 .withClaim("groups", auth.groups)
-                .withExpiresAt(expires)
+                .withExpiresAt(expires.atStartOfDay(ZoneId.systemDefault()).toInstant())
                 .sign(Algorithm.HMAC256(secret))
         }
 
-        val adminAuth = AuthStruct("admintest", listOf("super_admins"))
+        val adminAuth = AuthStruct("user01", listOf("super_admins"))
         val authToken = authorization(adminAuth)
 
         @JvmStatic
