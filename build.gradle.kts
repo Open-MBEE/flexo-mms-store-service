@@ -41,6 +41,11 @@ dependencies {
     //implementation("com.amazonaws:aws-java-sdk-s3:$s3_version")
     implementation("software.amazon.awssdk:s3-transfer-manager:2.29.50")
     implementation("software.amazon.awssdk.crt:aws-crt:0.33.7")
+    // required for DefaultCredentialsProvider to resolve WebIdentityTokenCredentialsProvider
+    // (IAM Roles for Service Accounts / IRSA on EKS) - without this module the provider
+    // silently disables itself and falls through to instance-profile/IMDS, which fails
+    // in EKS pods that rely on IRSA rather than static credentials.
+    implementation("software.amazon.awssdk:sts:2.29.50")
 
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
